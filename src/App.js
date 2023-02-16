@@ -29,15 +29,28 @@ export const ToDoApp = () => {
 useEffect(() => {
   if (newTask !== undefined) {
     todoList.push(newTask)
+    setNewTask(undefined)
   }
-}, [newTask])
+}, [newTask, todoList])
 
 
-// Check submit //
+// Check submit and update list//
 const checkSubmit = (e) => {
   if (e.key === 'Enter') {
-    setNewTask(e.target.value)
+    let tasksList = {
+      id: new Date().getTime(),
+      value: e.target.value,
+      completed: false,
+    }
+    setNewTask(tasksList)
   }
+}
+
+
+// Remove task //
+const removeTask = (e) => {
+  // eslint-disable-next-line eqeqeq
+  setTodoList(todoList.filter(newList => {return newList.id != e.target.value}))
 }
 
 
@@ -53,8 +66,8 @@ const checkSubmit = (e) => {
         <div>
           <input
             type='text'
-            placeholder={language.newTaskInput}
             value={inputValue}
+            placeholder={language.newTaskInput}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={checkSubmit}
           />
@@ -64,8 +77,10 @@ const checkSubmit = (e) => {
       <div>
         {todoList.map((task, index) =>
           <div key={index}>
-            <h3>{language.taskID}: {index +1}</h3> 
-            <p>{task}</p>
+            <h3>{language.taskID}: {todoList[index].id}</h3> 
+            <button value={todoList[index].id} onClick={removeTask}>❌</button> 
+            <button>completed: {todoList.completed ? "✔️" : "false"}</button>
+            <p>{todoList[index].value}</p>
           </div>
         )}
       </div>
