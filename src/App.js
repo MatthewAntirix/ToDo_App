@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import {cz} from "./language_cz"
 import {en} from "./language_en"
 import "./basic.css"
@@ -23,6 +23,9 @@ export const ToDoApp = () => {
   const [inputValue, setInputValue] = useState("")
   const [newTask, setNewTask] = useState()
   const [todoList, setTodoList] = useState([])
+  const [search, setSearch] = useState("")
+  const [searching, setSearching] = useState(false)
+  let currentList
 
 
 // Add new task //
@@ -68,6 +71,25 @@ const completeTask = (e) => {
 }
 
 
+// Search task //
+const searchTask = (e) => {
+  setSearch(e)
+  e === "" ? setSearching(false) : setSearching(true)
+}
+
+const filteredTodoList = useMemo(() => {
+  return todoList.filter((task) => {
+      return (
+          task.value
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+      )
+  })
+}, [search, todoList]);
+
+searching === false ? currentList = todoList : currentList = filteredTodoList
+
+
   return (
     <>
       <h1>{language.title}</h1>
@@ -89,14 +111,15 @@ const completeTask = (e) => {
       </form>
 
       <div>
-        {todoList.map((task, index) =>
+        {currentList.map((task, index) =>
           <div key={index}>
-            <h3>{language.taskID}: {todoList[index].id}</h3> 
-            <button value={todoList[index].id} onClick={removeTask}>❌</button> 
-            <button value={todoList[index].id} onClick={completeTask}>completed: {todoList[index].completed === true ? "✔️" : "⭕"}</button>
-            <p>{todoList[index].value}</p>
+            <h3>{language.taskID}: {currentList[index].id}</h3> 
+            <button value={currentList[index].id} onClick={removeTask}>❌</button> 
+            <button value={currentList[index].id} onClick={completeTask}>{language.completedTask}: {currentList[index].completed === true ? "✔️" : "⭕"}</button>
+            <p>{currentList[index].value}</p>
           </div>
-        )}
+        )}  
+        <input type="text" id="searchInput" placeholder={language.search} onChange={e => searchTask(e.target.value)}></input>
         <button onClick={removeALL}>{language.removeAll}</button>
       </div>
     </>
