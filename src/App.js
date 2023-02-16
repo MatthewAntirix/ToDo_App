@@ -53,6 +53,11 @@ const removeTask = (e) => {
   setTodoList(todoList.filter(newList => {return newList.id != e.target.value}))
 }
 
+// Remove ALL //
+const removeALL = () => {
+  setTodoList([])
+}
+
 
 // Complete task //
 const completeTask = (e) => {
@@ -92,6 +97,7 @@ const completeTask = (e) => {
             <p>{todoList[index].value}</p>
           </div>
         )}
+        <button onClick={removeALL}>{language.removeAll}</button>
       </div>
     </>
   )
