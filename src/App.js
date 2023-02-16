@@ -54,6 +54,15 @@ const removeTask = (e) => {
 }
 
 
+// Complete task //
+const completeTask = (e) => {
+  // eslint-disable-next-line eqeqeq
+  let isCompleted = todoList.findIndex(item => item.id == e.target.value)
+  todoList[isCompleted].completed = !todoList[isCompleted].completed
+  setTodoList([...todoList])
+}
+
+
   return (
     <>
       <h1>{language.title}</h1>
@@ -79,7 +88,7 @@ const removeTask = (e) => {
           <div key={index}>
             <h3>{language.taskID}: {todoList[index].id}</h3> 
             <button value={todoList[index].id} onClick={removeTask}>❌</button> 
-            <button>completed: {todoList.completed ? "✔️" : "false"}</button>
+            <button value={todoList[index].id} onClick={completeTask}>completed: {todoList[index].completed === true ? "✔️" : "⭕"}</button>
             <p>{todoList[index].value}</p>
           </div>
         )}
