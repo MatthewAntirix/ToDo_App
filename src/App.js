@@ -22,7 +22,8 @@ let languageSwitch = "en"
 export const ToDoApp = () => {
 
   // Main
-  const [todoList, setTodoList] = useState([])
+  const localStorageName = "TodoList"
+  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem(localStorageName)))
   // Add
     const [inputValue, setInputValue] = useState("")
     const [newTask, setNewTask] = useState()
@@ -118,6 +119,13 @@ const filteredTodoList = useMemo(() => {
 }, [search, todoList]);
 
 searching === false ? currentList = todoList : currentList = filteredTodoList
+
+
+// Local Storage save //
+
+useEffect(() => {
+  localStorage.setItem(localStorageName, JSON.stringify(todoList))
+})
 
 
   return (
