@@ -4,7 +4,7 @@ export const en = {
     newTaskInput: "What needs to be done?",
     taskID: "Task",
     editing: "Task editing",
-    search: "Search",
+    search: "Search..",
     completedTask: "Completed",
     removeAll: "Delete ALL !",
 }

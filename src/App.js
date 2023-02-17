@@ -121,7 +121,7 @@ searching === false ? currentList = todoList : currentList = filteredTodoList
 
 
   return (
-    <>
+    <div className='todoApp'>
       <h1>{language.title}</h1>
       <form
         onSubmit={e => {
@@ -131,6 +131,7 @@ searching === false ? currentList = todoList : currentList = filteredTodoList
       >
         <div>
           <input
+            className='newTask'
             type='text'
             value={inputValue}
             placeholder={language.newTaskInput}
@@ -140,42 +141,49 @@ searching === false ? currentList = todoList : currentList = filteredTodoList
         </div>
       </form>
 
-      <div>
-        {currentList.map((task, index) =>
-          <div key={index}>
-            <h3>{language.taskID}: {currentList[index].id}</h3> 
-            <button value={currentList[index].id} onClick={removeTask}>❌</button> 
-            <button value={currentList[index].id} onClick={completeTask}>{language.completedTask}: {currentList[index].completed === true ? "✔️" : "⭕"}</button>
-            <button value={currentList[index].id} onClick={editTask}>📝</button> 
+      <div className='menu'>
+        <input className='search' type="text" id="searchInput" placeholder={language.search} onChange={e => searchTask(e.target.value)}></input>
+        <button className='deleteAll' onClick={removeALL}>{language.removeAll}</button>
+      </div>
 
-
-            
-            <p>{currentList[index].value}</p>
-          </div>
-        )}  
-
-        {editing === true ? 
+      {editing === true ? 
           <form
             onSubmit={e => {
               e.preventDefault()
               setUpdateValue('')
             }}
           >
-            <label>{language.editing}:</label>
-            <input 
-              type="text" 
-              value={updateValue}  
-              id={currentListID}
-              onChange={e => setUpdateValue(e.target.value)}
-              onKeyDown={checkUpdate}
-            />
+            <div className='editTask'>
+              <label className='editLabel'>{language.editing}:</label>
+              <input 
+                className='editValue'
+                type="text" 
+                value={updateValue}  
+                id={currentListID}
+                onChange={e => setUpdateValue(e.target.value)}
+                onKeyDown={checkUpdate}
+              />
+              </div>
           </form>
         : ""}
 
-        <input type="text" id="searchInput" placeholder={language.search} onChange={e => searchTask(e.target.value)}></input>
-        <button onClick={removeALL}>{language.removeAll}</button>
+      <div className='list'>
+        {currentList.map((task, index) =>
+          <div className='task' key={index}>
+            <div className='taskMenuWrapper'>
+              <h3>{language.taskID}: {index +1}</h3> 
+              <div className='taskMenu'>
+                <button className='completed' value={currentList[index].id} onClick={completeTask}>{language.completedTask}: {currentList[index].completed === true ? "✔️" : "⭕"}</button>
+                <button className='edit' value={currentList[index].id} onClick={editTask}>📝</button>
+                <button className='delete' value={currentList[index].id} onClick={removeTask}>❌</button> 
+              </div>
+            </div>
+
+            <p className='taskValue' >{currentList[index].value}</p>
+          </div>
+        )}  
       </div>
-    </>
+    </div>
   )
 }
 
