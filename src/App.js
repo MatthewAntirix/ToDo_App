@@ -20,12 +20,21 @@ let languageSwitch = "en"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const ToDoApp = () => {
-  const [inputValue, setInputValue] = useState("")
-  const [newTask, setNewTask] = useState()
+
+  // Main
   const [todoList, setTodoList] = useState([])
-  const [search, setSearch] = useState("")
-  const [searching, setSearching] = useState(false)
-  let currentList
+  // Add
+    const [inputValue, setInputValue] = useState("")
+    const [newTask, setNewTask] = useState()
+  // Update
+    const [editing, setEditing] = useState(false)
+    const [currentListID, setCurrentListID] = useState("")
+    const [updateValue, setUpdateValue] = useState("")
+  // Search
+    const [searching, setSearching] = useState(false)
+    const [search, setSearch] = useState("") 
+  // Render
+    let currentList
 
 
 // Add new task //
@@ -33,21 +42,41 @@ useEffect(() => {
   if (newTask !== undefined) {
     todoList.push(newTask)
     setNewTask(undefined)
+    setSearching(false)
   }
+  setEditing(false)
 }, [newTask, todoList])
 
-
-// Check submit and update list//
-const checkSubmit = (e) => {
-  if (e.key === 'Enter') {
-    let tasksList = {
-      id: new Date().getTime(),
-      value: e.target.value,
-      completed: false,
+  // Check submit and update list //
+  const checkSubmit = (e) => {
+    if (e.key === 'Enter') {
+      let tasksList = {
+        id: new Date().getTime(),
+        value: e.target.value,
+        completed: false,
+      }
+      setNewTask(tasksList)
     }
-    setNewTask(tasksList)
   }
+
+
+// Edit task //
+const editTask = (e) => {
+  setEditing(true)
+  // eslint-disable-next-line eqeqeq
+  setUpdateValue(todoList[todoList.findIndex(item => item.id == e.target.value)].value)
+  setCurrentListID(e.target.value)
 }
+
+  // Check update and update list //
+  const checkUpdate = (e) => {
+    if (e.key === 'Enter') {
+      // eslint-disable-next-line eqeqeq
+      todoList[todoList.findIndex(item => item.id == e.target.id)].value = updateValue
+      setTodoList([...todoList])
+      setEditing(false)
+    }
+  }
 
 
 // Remove task //
@@ -56,10 +85,10 @@ const removeTask = (e) => {
   setTodoList(todoList.filter(newList => {return newList.id != e.target.value}))
 }
 
-// Remove ALL //
-const removeALL = () => {
-  setTodoList([])
-}
+  // Remove ALL //
+  const removeALL = () => {
+    setTodoList([])
+  }
 
 
 // Complete task //
@@ -75,6 +104,7 @@ const completeTask = (e) => {
 const searchTask = (e) => {
   setSearch(e)
   e === "" ? setSearching(false) : setSearching(true)
+  setEditing(false)
 }
 
 const filteredTodoList = useMemo(() => {
@@ -116,9 +146,32 @@ searching === false ? currentList = todoList : currentList = filteredTodoList
             <h3>{language.taskID}: {currentList[index].id}</h3> 
             <button value={currentList[index].id} onClick={removeTask}>❌</button> 
             <button value={currentList[index].id} onClick={completeTask}>{language.completedTask}: {currentList[index].completed === true ? "✔️" : "⭕"}</button>
+            <button value={currentList[index].id} onClick={editTask}>📝</button> 
+
+
+            
             <p>{currentList[index].value}</p>
           </div>
         )}  
+
+        {editing === true ? 
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              setUpdateValue('')
+            }}
+          >
+            <label>{language.editing}:</label>
+            <input 
+              type="text" 
+              value={updateValue}  
+              id={currentListID}
+              onChange={e => setUpdateValue(e.target.value)}
+              onKeyDown={checkUpdate}
+            />
+          </form>
+        : ""}
+
         <input type="text" id="searchInput" placeholder={language.search} onChange={e => searchTask(e.target.value)}></input>
         <button onClick={removeALL}>{language.removeAll}</button>
       </div>
