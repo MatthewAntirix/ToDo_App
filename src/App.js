@@ -23,7 +23,11 @@ export const ToDoApp = () => {
 
   // Main
   const localStorageName = "TodoList"
-  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem(localStorageName)))
+  const [todoList, setTodoList] = useState(
+    JSON.parse(localStorage.getItem(localStorageName))
+      ? JSON.parse(localStorage.getItem(localStorageName))
+      : []
+  )
   // Add
     const [inputValue, setInputValue] = useState("")
     const [newTask, setNewTask] = useState()
